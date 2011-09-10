@@ -4,10 +4,10 @@ function main(stage) {
 
     cli.addEventListener(sp.Event.COMPLETE, function () {
         var gameView = cli.content;
-        stage.addChild(gameView);
 
-        gameView.beatA.addEventListener(sp.MouseEvent.MOUSE_DOWN, function () {
-            console.log('down');
+        require({ baseUrl: 'client' }, [ 'Game' ], function (Game) {
+            stage.addChild(gameView);
+            new Game(gameView);
         });
     });
 
