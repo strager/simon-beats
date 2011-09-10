@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<title>Simon Beats</title>
+
+<script src="spaceport/swfobject.js"></script>
+<script src="spaceport/spaceport.js"></script>
+<script src="spaceport/unrequire.js"></script>
+<script>
+    if (typeof __PLATFORM === 'undefined') {
+        __PLATFORM = 'flash';
+        sp.bridge.swfPath = 'spaceport/Spaceport.swf';
+    }
+</script>
+
+<script src="client/main.js"></script>
+
+<div id="flashContent" style="z-index: 1; position: absolute; width: 760px; height: 600px;"></div>
