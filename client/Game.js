@@ -26,7 +26,7 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         self.measure.timer.stop();
         setTimeout(function () {
             beats[0].play(0, 9999);
-            self.measure.timer.start();
+            self.measure.timer.reset();
             self.onMeasureTick();
         }, 1000);
 
@@ -90,10 +90,10 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
 
             switch (this.state) {
             case 'recording':
-                this.recordingBeatSet.addBeatAt(this.measure.getCurrentTime());
+                this.recordingBeatSet.addBeatAt(this.measure.getCurrentTime(), beatIndex);
                 break;
             case 'playing':
-                this.playingBeatSet.addBeatAt(this.measure.getCurrentTime());
+                this.playingBeatSet.addBeatAt(this.measure.getCurrentTime(), beatIndex);
                 break;
             }
         }

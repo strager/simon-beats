@@ -4,12 +4,16 @@ define('BeatSet', [ ], function () {
         this.missThreshold = 250;
     }
 
-    function getIndexNearest(value, array) {
+    function getIndexNearest(beat, array) {
         var minDifference = Infinity;
         var minIndex = -1;
 
-        array.forEach(function (curValue, i) {
-            var diff = Math.abs(value - curValue);
+        array.forEach(function (curBeat, i) {
+            if (beat.type !== curBeat.type) {
+                return;
+            }
+
+            var diff = Math.abs(beat.time - curBeat.time);
 
             if (diff < minDifference) {
                 minDifference = diff;
@@ -21,8 +25,8 @@ define('BeatSet', [ ], function () {
     }
 
     BeatSet.prototype = {
-        addBeatAt: function addBeatAt(beatTime) {
-            this.beats.push(beatTime);
+        addBeatAt: function addBeatAt(beatTime, beatType) {
+            this.beats.push({ time: beatTime, type: beatType });
         },
 
         getMisses: function getMisses(referenceBeatSet) {
