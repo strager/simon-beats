@@ -1,25 +1,34 @@
 define('Measure', [ ], function () {
-    function Measure(bpm) {
+    function Measure(bpm, length) {
         this.bpm = bpm;
+        this.length = length;
+
         this.timer = new sp.Timer(60 / bpm * 1000);
-        this.timer.start();
 
         this.reset();
     }
 
-    function getCurrentTime() {
+    function time() {
         return +new Date();
     }
 
     Measure.prototype = {
         reset: function reset() {
-            this.startTime = getCurrentTime();
-            this.timer.reset();
+            this.startTime = time();
+            this.timer.start();
+        },
+
+        getCurrentTime: function getCurrentTime() {
+            var elapsed = time() - this.startTime;
+            return this.bpm * (elapsed / 1000 / 60);
         },
 
         getCurrentBeat: function getCurrentBeat() {
-            var elapsed = getCurrentTime() - this.startTime;
-            return this.bpm * (elapsed / 1000 / 60);
+            return this.timer.currentCount % this.length;
+        },
+
+        getCurrentMeasure: function getCurrentMeasure() {
+            return Math.floor(this.timer.currentCount / this.length);
         }
     };
 

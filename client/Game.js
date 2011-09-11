@@ -1,4 +1,4 @@
-define('Game', [ 'Measure' ], function (Measure) {
+define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
     function Game(view) {
         this.view = view;
         this.view.addEventListener(sp.MouseEvent.MOUSE_DOWN, this.onMouseDown.bind(this));
@@ -10,9 +10,12 @@ define('Game', [ 'Measure' ], function (Measure) {
             view.beatC
         ];
 
-        this.measure = new Measure(120);
-        this.measure.reset();
+        this.measure = new Measure(120, 8);
         this.measure.timer.addEventListener(sp.TimerEvent.TIMER, this.onMeasureTick.bind(this));
+
+        this.recordingBeatSet = new BeatSet();
+        this.playingBeatSet = new BeatSet();
+        this.setState('playing');
     }
 
     Game.prototype = {
@@ -26,12 +29,41 @@ define('Game', [ 'Measure' ], function (Measure) {
         onEnterFrame: function onEnterFrame(event) {
         },
 
-        beatClicked: function beatClicked(beatView) {
-            beatView.gotoAndPlay('hit');
+        onMeasureStart: function onMeasureStart(event) {
+            if (this.state === 'recording') {
+                this.setState('playing');
+                this.measure.reset();
+            } else {
+                this.setState('recording');
+                this.measure.reset();
+            }
         },
 
-        onMeasureTick: function onMeasureTick() {
+        onMeasureTick: function onMeasureTick(event) {
             this.view.measure.gotoAndPlay('tick');
+
+            if (this.measure.getCurrentBeat() === 0) {
+                // Measure ended
+                this.onMeasureStart();
+            }
+        },
+
+        setState: function setState(state) {
+            this.state = state;
+            this.view.gotoAndPlay(state);
+        },
+
+        beatClicked: function beatClicked(beatView) {
+            beatView.gotoAndPlay('hit');
+
+            switch (this.state) {
+            case 'recording':
+                this.recordingBeatSet.addBeatAt(this.measure.getCurrentTime());
+                break;
+            case 'playing':
+                this.playingBeatSet.addBeatAt(this.measure.getCurrentTime());
+                break;
+            }
         }
     };
 
