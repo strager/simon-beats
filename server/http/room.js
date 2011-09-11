@@ -1,9 +1,28 @@
 var User = require('../model/User');
+var Room = require('../model/Room');
 
 exports.init = function init(app) {
+    function checkUser(req, res, next) {
+        var uid = req.query.uid;
+
+        if (uid !== String(+uid) || !User.users[uid]) {
+            res.writeHead(403);
+            res.end();
+            return;
+        }
+
+        req.user = User.users[uid];
+        next();
+    }
+
     app.get('/users', function _users(req, res) {
         res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
         res.end(JSON.stringify(User.users));
+    });
+
+    app.get('/rooms', function _rooms(req, res) {
+        res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
+        res.end(JSON.stringify(Room.rooms));
     });
 
     app.all('/register', function _register(req, res) {
@@ -12,32 +31,36 @@ exports.init = function init(app) {
         res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
         res.end(JSON.stringify(user));
 
-        console.log('User registered:', user.toJSON());
+        console.log('User', user.toJSON(), 'registered');
     });
 
-    function checkReadyUsers() {
-        if (!User.users.every(function (user) { return !!user.readyConnection; })) {
-            // Not everyone is ready =[
-            return;
-        }
+    app.all('/room', checkUser, function _room(req, res) {
+        var room = new Room();
 
-        User.users.forEach(function (user) {
-            var game = { }; // TODO
+        room.addUser(req.user);
 
-            var res = user.readyConnection;
-            res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
-            res.end(JSON.stringify(game));
+        res.end(JSON.stringify(room));
 
-            user.isPlaying = true;
-        });
-    }
+        console.log('User', req.user.toJSON(), 'created room', room.toJSON());
+    });
 
-    app.all('/ready', function _play(req, res) {
-        var user = User.users[req.query.uid];
-        user.readyConnection = res;
+    app.all('/room/join/:id', checkUser, function _room_join(req, res) {
+        var user = req.user;
+        var room = Room.rooms[req.params.id];
 
-        console.log('User ready:', user.toJSON());
+        room.addUser(user);
 
-        checkReadyUsers();
+        res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
+        res.end(JSON.stringify({ status: 'ok' }));
+
+        console.log('User', user.toJSON(), 'joined room', room.toJSON());
+    });
+
+    app.all('/ready', checkUser, function _ready(req, res) {
+        req.user.readyConnection = res;
+
+        console.log('User', req.user.toJSON(), 'is ready');
+
+        req.user.room.checkReadyUsers();
     });
 };

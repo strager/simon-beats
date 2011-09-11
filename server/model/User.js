@@ -4,12 +4,14 @@ function User() {
 
     this.readyConnection = null;
     this.isPlaying = false;
+    this.room = null;
 }
 
 User.prototype = {
     toJSON: function toJSON() {
         return {
-            id: this.id
+            id: this.id,
+            room: !!this.room
         };
     }
 };
