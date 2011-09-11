@@ -1,14 +1,14 @@
 define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
-    function Game(view, beats) {
-        this.view = view;
+    function Game() {
+        this.view = new window.Assets.Game();
         this.view.addEventListener(sp.MouseEvent.MOUSE_DOWN, this.onMouseDown.bind(this));
         this.view.addEventListener(sp.TouchEvent.TOUCH_BEGIN, this.onMouseDown.bind(this));
         this.view.addEventListener(sp.Event.ENTER_FRAME, this.onEnterFrame.bind(this));
 
         this.beatViews = [
-            view.beatA,
-            view.beatB,
-            view.beatC
+            this.view.beatA,
+            this.view.beatB,
+            this.view.beatC
         ];
 
         var soundExtension = sp.bridge.platform === 'flash' ? 'mp3' : 'wav';
@@ -25,7 +25,7 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         var self = this;
         self.measure.timer.stop();
         setTimeout(function () {
-            beats[0].play(0, 9999);
+            Sounds.loops[0].play(0, 9999);
             self.measure.timer.reset();
             self.onMeasureTick();
         }, 1000);
@@ -59,6 +59,7 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         },
 
         onMeasureTick: function onMeasureTick(event) {
+            console.log(this.measure.getCurrentBeat(), this.measure.getCurrentMeasure());
             this.view.measure.gotoAndPlay('tick');
 
             if (this.measure.getCurrentBeat() === 0) {
