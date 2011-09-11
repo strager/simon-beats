@@ -27,7 +27,7 @@ define('BeatSet', [ ], function () {
 
         getMisses: function getMisses(referenceBeatSet) {
             var thisBeats = this.beats.slice();
-            var referenceBeats = referenceBeatSet.slice();
+            var referenceBeats = referenceBeatSet.beats.slice();
 
             var thisNewBeats = [ ];
 
@@ -35,7 +35,7 @@ define('BeatSet', [ ], function () {
                 var index = getIndexNearest(thisBeats[i], referenceBeats);
                 var diff = Math.abs(thisBeats[i] - referenceBeats[i]);
 
-                if (diff < missThreshold) {
+                if (diff < this.missThreshold) {
                     referenceBeats.splice(index, 1);
                 } else {
                     thisNewBeats.push(thisBeats[i]);

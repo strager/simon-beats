@@ -13,8 +13,6 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         this.measure = new Measure(120, 8);
         this.measure.timer.addEventListener(sp.TimerEvent.TIMER, this.onMeasureTick.bind(this));
 
-        this.recordingBeatSet = new BeatSet();
-        this.playingBeatSet = new BeatSet();
         this.setState('playing');
     }
 
@@ -34,6 +32,10 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
                 this.setState('playing');
                 this.measure.reset();
             } else {
+                if (this.playingBeatSet && this.recordingBeatSet) {
+                    console.log(this.playingBeatSet.getMisses(this.recordingBeatSet));
+                }
+
                 this.setState('recording');
                 this.measure.reset();
             }
@@ -51,6 +53,15 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         setState: function setState(state) {
             this.state = state;
             this.view.gotoAndPlay(state);
+
+            switch (this.state) {
+            case 'recording':
+                this.recordingBeatSet = new BeatSet();
+                break;
+            case 'playing':
+                this.playingBeatSet = new BeatSet();
+                break;
+            }
         },
 
         beatClicked: function beatClicked(beatView) {
