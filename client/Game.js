@@ -14,9 +14,9 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         var soundExtension = sp.bridge.platform === 'flash' ? 'mp3' : 'wav';
 
         this.beatSounds = [
-            new sp.Sound(new sp.URLRequest('assets/bark.' + soundExtension)),
-            new sp.Sound(new sp.URLRequest('assets/baa.' + soundExtension)),
-            new sp.Sound(new sp.URLRequest('assets/quack.' + soundExtension))
+            new sp.Sound(new sp.URLRequest('assets/bark_s.' + soundExtension)),
+            new sp.Sound(new sp.URLRequest('assets/baa_s.' + soundExtension)),
+            new sp.Sound(new sp.URLRequest('assets/quack_s.' + soundExtension))
         ];
 
         this.measure = new Measure(120, 8);
