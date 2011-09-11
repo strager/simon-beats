@@ -24,11 +24,11 @@ define('Measure', [ ], function () {
         },
 
         getCurrentBeat: function getCurrentBeat() {
-            return this.timer.currentCount % this.length;
+            return (this.timer.currentCount + 1) % this.length;
         },
 
         getCurrentMeasure: function getCurrentMeasure() {
-            return Math.floor(this.timer.currentCount / this.length);
+            return Math.floor((this.timer.currentCount + 1) / this.length);
         }
     };
 

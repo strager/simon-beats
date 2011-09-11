@@ -1,5 +1,5 @@
 define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
-    function Game(view) {
+    function Game(view, beats) {
         this.view = view;
         this.view.addEventListener(sp.MouseEvent.MOUSE_DOWN, this.onMouseDown.bind(this));
         this.view.addEventListener(sp.TouchEvent.TOUCH_BEGIN, this.onMouseDown.bind(this));
@@ -21,6 +21,14 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
 
         this.measure = new Measure(120, 8);
         this.measure.timer.addEventListener(sp.TimerEvent.TIMER, this.onMeasureTick.bind(this));
+
+        var self = this;
+        self.measure.timer.stop();
+        setTimeout(function () {
+            beats[0].play(0, 9999);
+            self.measure.timer.start();
+            self.onMeasureTick();
+        }, 1000);
 
         this.setState('playing');
     }
