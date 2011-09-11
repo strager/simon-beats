@@ -45,9 +45,15 @@ exports.init = function init(app) {
     });
 
     app.all('/room/join/:id', checkUser, function _room_join(req, res) {
-        var user = req.user;
         var room = Room.rooms[req.params.id];
 
+        if (room.gameStarted) {
+            res.writeHead(403);
+            res.end();
+            return;
+        }
+
+        var user = req.user;
         room.addUser(user);
 
         res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
