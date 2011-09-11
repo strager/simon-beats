@@ -4,10 +4,16 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
         this.view.addEventListener(sp.MouseEvent.MOUSE_DOWN, this.onMouseDown.bind(this));
         this.view.addEventListener(sp.Event.ENTER_FRAME, this.onEnterFrame.bind(this));
 
-        this.beats = [
+        this.beatViews = [
             view.beatA,
             view.beatB,
             view.beatC
+        ];
+
+        this.beatSounds = [
+            new sp.Sound(new sp.URLRequest('assets/bark.mp3')),
+            new sp.Sound(new sp.URLRequest('assets/baa.mp3')),
+            new sp.Sound(new sp.URLRequest('assets/quack.mp3'))
         ];
 
         this.measure = new Measure(120, 8);
@@ -18,9 +24,9 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
 
     Game.prototype = {
         onMouseDown: function onMouseDown(event) {
-            var index = this.beats.indexOf(event.target);
+            var index = this.beatViews.indexOf(event.target);
             if (index >= 0) {
-                this.beatClicked(this.beats[index]);
+                this.beatClicked(index);
             }
         },
 
@@ -64,8 +70,12 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
             }
         },
 
-        beatClicked: function beatClicked(beatView) {
+        beatClicked: function beatClicked(beatIndex) {
+            var beatView = this.beatViews[beatIndex];
             beatView.gotoAndPlay('hit');
+
+            var beatSound = this.beatSounds[beatIndex];
+            beatSound.play();
 
             switch (this.state) {
             case 'recording':
