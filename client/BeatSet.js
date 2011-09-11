@@ -1,7 +1,7 @@
 define('BeatSet', [ ], function () {
     function BeatSet() {
         this.beats = [ ];
-        this.missThreshold = 150;
+        this.missThreshold = 250;
     }
 
     function getIndexNearest(value, array) {
