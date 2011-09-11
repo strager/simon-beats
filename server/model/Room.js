@@ -23,7 +23,7 @@ Room.prototype = {
 
         this.users.forEach(function (user) {
             var res = user.readyConnection;
-            res.setHeader('Content-type', app.JSON_CONTENT_TYPE);
+            res.setHeader('Content-type', 'application/json');
             res.end(JSON.stringify(game));
 
             user.isPlaying = true;
