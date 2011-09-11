@@ -2,6 +2,7 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
     function Game(view) {
         this.view = view;
         this.view.addEventListener(sp.MouseEvent.MOUSE_DOWN, this.onMouseDown.bind(this));
+        this.view.addEventListener(sp.TouchEvent.TOUCH_BEGIN, this.onMouseDown.bind(this));
         this.view.addEventListener(sp.Event.ENTER_FRAME, this.onEnterFrame.bind(this));
 
         this.beatViews = [
@@ -10,10 +11,12 @@ define('Game', [ 'Measure', 'BeatSet' ], function (Measure, BeatSet) {
             view.beatC
         ];
 
+        var soundExtension = sp.bridge.platform === 'flash' ? 'mp3' : 'wav';
+
         this.beatSounds = [
-            new sp.Sound(new sp.URLRequest('assets/bark.mp3')),
-            new sp.Sound(new sp.URLRequest('assets/baa.mp3')),
-            new sp.Sound(new sp.URLRequest('assets/quack.mp3'))
+            new sp.Sound(new sp.URLRequest('assets/bark.' + soundExtension)),
+            new sp.Sound(new sp.URLRequest('assets/baa.' + soundExtension)),
+            new sp.Sound(new sp.URLRequest('assets/quack.' + soundExtension))
         ];
 
         this.measure = new Measure(120, 8);
